@@ -30,6 +30,9 @@ touch .env
 ```
 Выполните миграции
 ```
+cd order_management
+```
+```
 python manage.py migrate
 ```
 Запустить проект:
@@ -44,3 +47,20 @@ cd order_management
 ```
 python manage.py loaddata db.json
 ```
+## Создание суперпользователя и админка
+Создайте суперпользователя командой в терминале:
+```
+python manage.py createsuperuser
+```
+Админ-зона Django доступна по адресу: `http://127.0.0.1:8000/admin/`.
+## Документация Swagger
+Документация для API доступна по адресу: `http://127.0.0.1:8000/api/docs/`.
+## Запуск тестов
+Для запуска тестов выполните команды из корневой директории:
+```
+cd order_management
+```
+```
+pytest
+```
+Доступны тесты для приложений `orders` и `api`
