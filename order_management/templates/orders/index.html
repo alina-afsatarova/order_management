@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}Система управления заказами в кафе{% endblock title %}
+{% block content %}
+<h1 class="text-center">Таблица заказов</h1>
+
+<form method="get" action="{% url 'orders:index' %}">
+  <div class="row align-items-center">
+    <div class="col-auto">
+        <select id="Select" name="select" class="form-select" aria-label="Default select example">
+            <option selected>Фильтрация по статусу</option>
+            <option value="Waiting">В ожидании</option>
+            <option value="Done">Готово</option>
+            <option value="Paid">Оплачено</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Отфильтровать</button>
+    </div>
+  </div>
+</form>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">ID заказа</th>
+      <th scope="col">Номер стола</th>
+      <th scope="col">Статус заказа</th>
+      <th scope="col">Дата и время создания заказа</th>
+      <th scope="col">Список заказанных блюд</th>
+      <th scope="col">Общая стоимость заказа</th>
+      <th scope="col">Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in object_list %}
+    <tr>
+      <td>
+        <a href="{% url 'orders:detail_order' order.id %}">{{ order.id }}</a>
+      </td>
+      <td>{{ order.table_number }}</td>
+      <td>{{ order.get_status_display }}</td>
+      <td>{{ order.created_at|date:"H:i, d.m.Y" }}</td>
+      <td>
+        {% for item in order.items.all %}
+          {{ item }} {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </td>
+      <td>{{ order.total_price }} руб.</td>
+      <td>
+        <form method="post" action="{% url 'orders:edit_order' order.id %}" style="display:inline;">
+          {% csrf_token %}
+          {% bootstrap_button button_type="submit" content="Изменить заказ" %}
+        </form>
+        <form method="post" action="{% url 'orders:delete_order' order.id %}" style="display:inline;">
+          {% csrf_token %}
+          {% bootstrap_button button_type="submit" content="Удалить заказ" %}
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="7" class="text-center">Ничего не найдено</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

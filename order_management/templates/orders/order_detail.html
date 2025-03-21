@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}Заказ с ID: {{ object.id }}{% endblock title %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <div class="card">
+          <div class="card-header">Заказ с ID: {{ object.id }}</div>
+          <div class="card-body">
+            <h5 class="card-title">Номер стола: {{ object.table_number }}</h5>
+            <p class="card-text">
+              Список заказанных блюд:
+              <ul>
+                {% for item in object.items.all %}
+                  <li>{{ item }}</li>
+                {% endfor %}
+              </ul>
+            <p>Общая стоимость заказа: {{ object.total_price }}, руб.</p>
+            <p>Статус заказа: {{ object.get_status_display }}</p>
+            <form method="post" action="{% url 'orders:edit_order' order.id %}" style="display:inline;">
+              {% csrf_token %}
+              {% bootstrap_button button_type="submit" content="Изменить заказ" %}
+            </form>
+            <form method="post" action="{% url 'orders:delete_order' order.id %}" style="display:inline;">
+              {% csrf_token %}
+              {% bootstrap_button button_type="submit" content="Удалить заказ" %}
+            </form>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
